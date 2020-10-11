@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Game extends JPanel implements GameObject.CollisionListener {
+    public static boolean isPlaying = true;
+
     private final Snake snake;
     private final ArrayList<GameObject> childs;
     private final Random randomGenerator;
@@ -57,7 +59,13 @@ public class Game extends JPanel implements GameObject.CollisionListener {
             } catch (Exception ignored) {
             }
         }
-        repaint();
+
+        if (isPlaying) {
+            repaint();
+        } else {
+            JOptionPane.showMessageDialog(this, "Game over!");
+            System.exit(0);
+        }
     }
 
     public void checkForCollision() {

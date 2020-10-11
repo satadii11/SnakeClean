@@ -48,6 +48,7 @@ public class Snake extends GameObject {
     public void move(int maxRow, int maxColumn) {
         moveTail();
         moveHead(maxRow, maxColumn);
+        if (isCollidingWithTails(getXPosition(), getYPosition())) Game.isPlaying = false;
     }
 
     private void moveHead(int maxRow, int maxColumn) {
@@ -122,7 +123,11 @@ public class Snake extends GameObject {
 
     public boolean isColliding(int xPosition, int yPosition) {
         boolean headIsColliding = getXPosition() == xPosition && getYPosition() == yPosition;
-        if (!headIsColliding) return false;
+        if (headIsColliding) return true;
+        return isCollidingWithTails(xPosition, yPosition);
+    }
+
+    private boolean isCollidingWithTails(int xPosition, int yPosition) {
         for (int[] tail : tails) {
             if (tail[X_POSITION] == xPosition && tail[Y_POSITION] == yPosition) return true;
         }

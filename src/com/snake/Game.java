@@ -7,38 +7,37 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Game extends JPanel implements GameObject.CollisionListener {
-    public static boolean isPlaying = true;
+    public static boolean aBoolean = true;
 
     private final Snake snake;
-    private final ArrayList<GameObject> childs;
-    private final Random randomGenerator;
+    private final ArrayList<GameObject> list;
+    private final Random random;
 
-    private final int maxRow;
-    private final int maxColumn;
+    private final int i;
+    private final int j;
 
-    public Game(Snake snake, int width, int height) {
+    public Game(Snake snake, int x, int y) {
         this.snake = snake;
-        this.maxColumn = (width / Config.GRID_SIZE) - 1;
-        this.maxRow = (height / Config.GRID_SIZE) - 1;
-        this.randomGenerator = new Random();
-        this.childs = new ArrayList<>(this.maxColumn);
-        this.childs.add(snake);
+        this.j = (x / Config.GRID_SIZE) - 1;
+        this.i = (y / Config.GRID_SIZE) - 1;
+
+        this.random = new Random();
+        this.list = new ArrayList<>(this.j);
+        this.list.add(snake);
         this.snake.setCollisionListener(this);
 
-        setPreferredSize(new Dimension(width, height));
-        generateFood();
-    }
+        setPreferredSize(new Dimension(x, y));
 
-    private void generateFood() {
+        // Generate Food
         int xPosition;
         int yPosition;
         do {
-            xPosition = randomGenerator.nextInt(maxColumn);
-            yPosition = randomGenerator.nextInt(maxRow);
+            xPosition = random.nextInt(j);
+            yPosition = random.nextInt(i);
         } while (snake.isColliding(xPosition, yPosition));
 
         Fruit newFruit = new Fruit(xPosition, yPosition);
-        this.childs.add(newFruit);
+        this.list.add(newFruit);
     }
 
     public void paintComponent(Graphics graphicDrawer) {
@@ -46,9 +45,22 @@ public class Game extends JPanel implements GameObject.CollisionListener {
 
         long startTime = System.nanoTime();
 
-        checkForCollision();
-        snake.move(maxRow, maxColumn);
-        for (GameObject child : childs) {
+        //Check for coilisoon
+        int numOfChild = list.size();
+        for (int position = 0; position < numOfChild; position++) {
+            GameObject currentChild = list.get(position);
+            int nextChildPosition = position + 1;
+            if (numOfChild != nextChildPosition) {
+                for (int nextPosition = nextChildPosition; nextChildPosition < numOfChild; nextChildPosition++) {
+                    GameObject nextChild = list.get(nextPosition);
+                    if (currentChild.isColliding(nextChild))
+                        currentChild.onCollided(currentChild, nextChild);
+                }
+            }
+        }
+
+        snake.move(i, j);
+        for (GameObject child : list) {
             child.draw(graphicDrawer);
         }
 
@@ -60,7 +72,7 @@ public class Game extends JPanel implements GameObject.CollisionListener {
             }
         }
 
-        if (isPlaying) {
+        if (aBoolean) {
             repaint();
         } else {
             JOptionPane.showMessageDialog(this, "Game over!");
@@ -68,23 +80,9 @@ public class Game extends JPanel implements GameObject.CollisionListener {
         }
     }
 
-    public void checkForCollision() {
-        int numOfChild = childs.size();
-        for (int position = 0; position < numOfChild; position++) {
-            GameObject currentChild = childs.get(position);
-            int nextChildPosition = position + 1;
-            if (numOfChild != nextChildPosition) {
-                for (int nextPosition = nextChildPosition; nextChildPosition < numOfChild; nextChildPosition++) {
-                    GameObject nextChild = childs.get(nextPosition);
-                    if (currentChild.isColliding(nextChild))
-                        currentChild.onCollided(currentChild, nextChild);
-                }
-            }
-        }
-    }
 
     public void checkForEvent(KeyEvent event) {
-        for (GameObject child : childs) {
+        for (GameObject child : list) {
             child.checkForEvent(event);
         }
     }
@@ -92,8 +90,16 @@ public class Game extends JPanel implements GameObject.CollisionListener {
     @Override
     public void onCollided(GameObject currentChild, GameObject nextChild) {
         if (currentChild instanceof Snake && nextChild instanceof Fruit) {
-            generateFood();
-            childs.remove(nextChild);
+            int xPosition;
+            int yPosition;
+            do {
+                xPosition = random.nextInt(j);
+                yPosition = random.nextInt(i);
+            } while (snake.isColliding(xPosition, yPosition));
+
+            Fruit newFruit = new Fruit(xPosition, yPosition);
+            this.list.add(newFruit);
+            list.remove(nextChild);
         }
     }
 }

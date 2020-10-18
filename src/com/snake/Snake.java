@@ -10,15 +10,20 @@ public class Snake extends GameObject {
 
     private ArrayList<int[]> tails;
 
-    private Direction direction;
+    private int direct = -1;
 
     private int tailTotal;
+
+    private int LEFTX = 1201;
+    private int RIGHTX = 1202;
+    private int UPX = 1203;
+    private int DOWNX = 1204;
 
     public Snake(int xPosition, int yPosition) {
         super(xPosition, yPosition);
         this.tails = new ArrayList<>();
         this.tailTotal = 0;
-        this.direction = Direction.RIGHT;
+        direct = RIGHTX;
     }
 
     @Override
@@ -48,70 +53,52 @@ public class Snake extends GameObject {
     public void move(int maxRow, int maxColumn) {
         moveTail();
         moveHead(maxRow, maxColumn);
-        if (isCollidingWithTails(getXPosition(), getYPosition())) Game.isPlaying = false;
+        if (isCollidingWithTails(getXPosition(), getYPosition())) Game.aBoolean = false;
     }
 
     private void moveHead(int maxRow, int maxColumn) {
         int newXPosition = getXPosition();
         int newYPosition = getYPosition();
-        switch (direction) {
-            case LEFT:
-                newXPosition = getXPosition() == 0 ? maxColumn : getXPosition() - 1;
-                break;
-            case RIGHT:
-                newXPosition = getXPosition() == maxColumn ? 0 : getXPosition() + 1;
-                break;
-            case UP:
-                newYPosition = getYPosition() == 0 ? maxRow : getYPosition() - 1;
-                break;
-            case DOWN:
-                newYPosition = getYPosition() == maxRow ? 0 : getYPosition() + 1;
-        }
+
+       if (direct == LEFTX){
+           newXPosition = getXPosition() == 0 ? maxColumn : getXPosition() - 1;
+       } else if (direct == RIGHTX){
+           newXPosition = getXPosition() == maxColumn ? 0 : getXPosition() + 1;
+       } else if (direct == UPX){
+           newYPosition = getYPosition() == 0 ? maxRow : getYPosition() - 1;
+       } else if (direct == DOWNX){
+           newYPosition = getYPosition() == maxRow ? 0 : getYPosition() + 1;
+       }
+
         setXPosition(newXPosition);
         setYPosition(newYPosition);
     }
 
     private void moveTail() {
-        if (shouldAddTail()) {
+        if (tails.size() != tailTotal) {
             tails.add(new int[]{getXPosition(), getYPosition()});
-        } else if (shouldShiftTails()) {
-            shiftTails();
+        } else if (tailTotal != 0) {
+            ArrayList<int[]> newTails = new ArrayList<>(tailTotal);
+            int lastTailPosition = tails.size() - 1;
+            for (int i = 0; i < lastTailPosition; i++) {
+                newTails.add(tails.get(i + 1));
+            }
+            newTails.add(lastTailPosition, new int[]{getXPosition(), getYPosition()});
+            tails = newTails;
         }
     }
 
-    private void shiftTails() {
-        ArrayList<int[]> newTails = new ArrayList<>(tailTotal);
-        int lastTailPosition = tails.size() - 1;
-        for (int i = 0; i < lastTailPosition; i++) {
-            newTails.add(tails.get(i + 1));
-        }
-        newTails.add(lastTailPosition, new int[]{getXPosition(), getYPosition()});
-        tails = newTails;
-    }
-
-    private boolean shouldShiftTails() {
-        return tailTotal != 0;
-    }
-
-    private boolean shouldAddTail() {
-        return tails.size() != tailTotal;
-    }
 
     @Override
     public void checkForEvent(KeyEvent event) {
-        switch (event.getKeyCode()) {
-            case KeyEvent.VK_UP:
-                if (direction != Direction.DOWN) direction = Direction.UP;
-                break;
-            case KeyEvent.VK_DOWN:
-                if (direction != Direction.UP) direction = Direction.DOWN;
-                break;
-            case KeyEvent.VK_LEFT:
-                if (direction != Direction.RIGHT) direction = Direction.LEFT;
-                break;
-            case KeyEvent.VK_RIGHT:
-                if (direction != Direction.LEFT) direction = Direction.RIGHT;
-                break;
+        if (event.getKeyCode() == KeyEvent.VK_UP){
+            if (direct != UPX) direct = UPX;
+        } else if(event.getKeyCode() == KeyEvent.VK_DOWN){
+            if (direct != DOWNX) direct = DOWNX;
+        } else if(event.getKeyCode() == KeyEvent.VK_LEFT){
+            if (direct != LEFTX) direct = LEFTX;
+        } else if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
+            if (direct != RIGHTX) direct = RIGHTX;
         }
     }
 

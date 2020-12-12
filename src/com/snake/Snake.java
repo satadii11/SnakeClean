@@ -5,8 +5,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class Snake extends GameObject {
-    private static final int X_POSITION = 0;
-    private static final int Y_POSITION = 1;
+    private static final int HORIZONTAL_POSITION = 0;
+    private static final int VERTICAL_POSITION = 1;
 
     private ArrayList<int[]> tails;
 
@@ -37,8 +37,8 @@ public class Snake extends GameObject {
 
     private void drawTail(Graphics graphicDrawer) {
         for (int[] tail : tails) {
-            int xCoordinate = getTopLeftCoordinate(tail[X_POSITION]);
-            int yCoordinate = getTopLeftCoordinate(tail[Y_POSITION]);
+            int xCoordinate = getTopLeftCoordinate(tail[HORIZONTAL_POSITION]);
+            int yCoordinate = getTopLeftCoordinate(tail[VERTICAL_POSITION]);
             graphicDrawer.setColor(new Color(0, 0, 156));
             graphicDrawer.fillOval(xCoordinate, yCoordinate, getSize(), getSize());
         }
@@ -129,7 +129,7 @@ public class Snake extends GameObject {
 
     private boolean isCollidingWithTails(int xPosition, int yPosition) {
         for (int[] tail : tails) {
-            if (tail[X_POSITION] == xPosition && tail[Y_POSITION] == yPosition) return true;
+            if (tail[HORIZONTAL_POSITION] == xPosition && tail[VERTICAL_POSITION] == yPosition) return true;
         }
 
         return false;

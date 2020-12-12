@@ -8,7 +8,7 @@ public class Snake extends GameObject {
     private static final int X = 0;
     private static final int Y = 1;
 
-    private ArrayList<int[]> tails;
+    private ArrayList<int[]> LList;
 
     private int direct = -1;
 
@@ -21,7 +21,7 @@ public class Snake extends GameObject {
 
     public Snake(int xPosition, int yPosition) {
         super(xPosition, yPosition);
-        this.tails = new ArrayList<>();
+        this.LList = new ArrayList<>();
         this.tailTotal = 0;
         direct = RIGHTX;
     }
@@ -41,7 +41,7 @@ public class Snake extends GameObject {
     }
 
     private void drawTail(Graphics graphicDrawer) {
-        for (int[] tail : tails) {
+        for (int[] tail : LList) {
             int xCoordinate = getTopLeftCoordinate(tail[X]);
             int yCoordinate = getTopLeftCoordinate(tail[Y]);
             graphicDrawer.setColor(new Color(0, 0, 156));
@@ -53,7 +53,7 @@ public class Snake extends GameObject {
     public void move(int maxRow, int maxColumn) {
         moveTail();
         moveHead(maxRow, maxColumn);
-        if (isCollidingWithTails(getXPosition(), getYPosition())) Game.aBoolean = false;
+        if (crushSnake(getXPosition(), getYPosition())) Game.aBoolean = false;
     }
 
     private void moveHead(int maxRow, int maxColumn) {
@@ -75,16 +75,16 @@ public class Snake extends GameObject {
     }
 
     private void moveTail() {
-        if (tails.size() != tailTotal) {
-            tails.add(new int[]{getXPosition(), getYPosition()});
+        if (LList.size() != tailTotal) {
+            LList.add(new int[]{getXPosition(), getYPosition()});
         } else if (tailTotal != 0) {
-            ArrayList<int[]> newTails = new ArrayList<>(tailTotal);
-            int lastTailPosition = tails.size() - 1;
+            ArrayList<int[]> newLList = new ArrayList<>(tailTotal);
+            int lastTailPosition = LList.size() - 1;
             for (int i = 0; i < lastTailPosition; i++) {
-                newTails.add(tails.get(i + 1));
+                newLList.add(LList.get(i + 1));
             }
-            newTails.add(lastTailPosition, new int[]{getXPosition(), getYPosition()});
-            tails = newTails;
+            newLList.add(lastTailPosition, new int[]{getXPosition(), getYPosition()});
+            LList = newLList;
         }
     }
 
@@ -111,14 +111,15 @@ public class Snake extends GameObject {
     public boolean isColliding(int xPosition, int yPosition) {
         boolean headIsColliding = getXPosition() == xPosition && getYPosition() == yPosition;
         if (headIsColliding) return true;
-        return isCollidingWithTails(xPosition, yPosition);
+        return crushSnake(xPosition, yPosition);
     }
 
-    private boolean isCollidingWithTails(int xPosition, int yPosition) {
-        for (int[] tail : tails) {
-            if (tail[X] == xPosition && tail[Y] == yPosition) return true;
+ private boolean crushSnake(int x, int y) {
+        for (int[] tail : LList) {
+                      if (tail[X] == x && tail[Y] == y) return true;
+                  }
+        
+              return false;
         }
 
-        return false;
-    }
 }

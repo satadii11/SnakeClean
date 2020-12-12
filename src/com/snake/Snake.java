@@ -28,7 +28,7 @@ public class Snake extends GameObject {
 
     @Override
     public void draw(Graphics graphicDrawer) {
-        drawTail(graphicDrawer);
+        snakes(graphicDrawer);
 
         int xCoordinate = getTopLeftCoordinate(getXPosition());
         int yCoordinate = getTopLeftCoordinate(getYPosition());
@@ -40,7 +40,7 @@ public class Snake extends GameObject {
         return (currentPosition * Config.GRID_SIZE) + Config.SPACING;
     }
 
-    private void drawTail(Graphics graphicDrawer) {
+    private void snakes(Graphics graphicDrawer) {
         for (int[] tail : LList) {
             int xCoordinate = getTopLeftCoordinate(tail[X]);
             int yCoordinate = getTopLeftCoordinate(tail[Y]);
@@ -60,15 +60,15 @@ public class Snake extends GameObject {
         int newXPosition = getXPosition();
         int newYPosition = getYPosition();
 
-       if (direct == LEFTX){
-           newXPosition = getXPosition() == 0 ? maxColumn : getXPosition() - 1;
-       } else if (direct == RIGHTX){
-           newXPosition = getXPosition() == maxColumn ? 0 : getXPosition() + 1;
-       } else if (direct == UPX){
-           newYPosition = getYPosition() == 0 ? maxRow : getYPosition() - 1;
-       } else if (direct == DOWNX){
-           newYPosition = getYPosition() == maxRow ? 0 : getYPosition() + 1;
-       }
+        if (direct == LEFTX) {
+            newXPosition = getXPosition() == 0 ? maxColumn : getXPosition() - 1;
+        } else if (direct == RIGHTX) {
+            newXPosition = getXPosition() == maxColumn ? 0 : getXPosition() + 1;
+        } else if (direct == UPX) {
+            newYPosition = getYPosition() == 0 ? maxRow : getYPosition() - 1;
+        } else if (direct == DOWNX) {
+            newYPosition = getYPosition() == maxRow ? 0 : getYPosition() + 1;
+        }
 
         setXPosition(newXPosition);
         setYPosition(newYPosition);
@@ -91,11 +91,11 @@ public class Snake extends GameObject {
 
     @Override
     public void checkForEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.VK_UP){
+        if (event.getKeyCode() == KeyEvent.VK_UP) {
             if (direct != UPX) direct = UPX;
-        } else if(event.getKeyCode() == KeyEvent.VK_DOWN){
+        } else if (event.getKeyCode() == KeyEvent.VK_DOWN) {
             if (direct != DOWNX) direct = DOWNX;
-        } else if(event.getKeyCode() == KeyEvent.VK_LEFT){
+        } else if (event.getKeyCode() == KeyEvent.VK_LEFT) {
             if (direct != LEFTX) direct = LEFTX;
         } else if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
             if (direct != RIGHTX) direct = RIGHTX;
@@ -114,12 +114,12 @@ public class Snake extends GameObject {
         return crushSnake(xPosition, yPosition);
     }
 
- private boolean crushSnake(int x, int y) {
+    private boolean crushSnake(int x, int y) {
         for (int[] tail : LList) {
-                      if (tail[X] == x && tail[Y] == y) return true;
-                  }
-        
-              return false;
+            if (tail[X] == x && tail[Y] == y) return true;
         }
+
+        return false;
+    }
 
 }

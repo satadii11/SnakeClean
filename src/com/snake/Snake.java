@@ -42,8 +42,8 @@ public class Snake extends GameObject {
 
     private void drawTail(Graphics graphicDrawer) {
         for (int[] tail : tails) {
-            int xCoordinate = getTopLeftCoordinate(tail[X_POSITION]);
-            int yCoordinate = getTopLeftCoordinate(tail[Y_POSITION]);
+            int xCoordinate = getTopLeftCoordinate(tail[X]);
+            int yCoordinate = getTopLeftCoordinate(tail[Y]);
             graphicDrawer.setColor(new Color(0, 0, 156));
             graphicDrawer.fillOval(xCoordinate, yCoordinate, getSize(), getSize());
         }
@@ -116,7 +116,7 @@ public class Snake extends GameObject {
 
     private boolean isCollidingWithTails(int xPosition, int yPosition) {
         for (int[] tail : tails) {
-            if (tail[X_POSITION] == xPosition && tail[Y_POSITION] == yPosition) return true;
+            if (tail[X] == xPosition && tail[Y] == yPosition) return true;
         }
 
         return false;

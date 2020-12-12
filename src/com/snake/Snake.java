@@ -5,8 +5,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class Snake extends GameObject {
-    private static final int X_POSITION = 0;
-    private static final int Y_POSITION = 1;
+    private static final int X = 0;
+    private static final int Y = 1;
 
     private ArrayList<int[]> tails;
 

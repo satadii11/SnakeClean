@@ -5,8 +5,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class Snake extends GameObject {
-    private static final int X = 0;
-    private static final int Y = 1;
 
     private ArrayList<int[]> LList;
 
@@ -30,6 +28,8 @@ public class Snake extends GameObject {
     public void draw(Graphics graphicDrawer) {
         snakes(graphicDrawer);
 
+        System.out.println("asd");
+
         int xCoordinate = getTopLeftCoordinate(getXPosition());
         int yCoordinate = getTopLeftCoordinate(getYPosition());
         graphicDrawer.setColor(new Color(156, 0, 0));
@@ -41,9 +41,9 @@ public class Snake extends GameObject {
     }
 
     private void snakes(Graphics graphicDrawer) {
-        for (int[] tail : LList) {
-            int xCoordinate = getTopLeftCoordinate(tail[X]);
-            int yCoordinate = getTopLeftCoordinate(tail[Y]);
+        for (int i = 1;i<LList.size();i++){
+            int xCoordinate = (LList.get(i)[0] * Config.GRID_SIZE) + Config.SPACING;
+            int yCoordinate = (LList.get(i)[1] * Config.GRID_SIZE) + Config.SPACING;
             graphicDrawer.setColor(new Color(0, 0, 156));
             graphicDrawer.fillOval(xCoordinate, yCoordinate, getSize(), getSize());
         }
@@ -116,7 +116,7 @@ public class Snake extends GameObject {
 
     private boolean crushSnake(int x, int y) {
         for (int[] tail : LList) {
-            if (tail[X] == x && tail[Y] == y) return true;
+            if (tail[0] == x && tail[1] == y) return true;
         }
 
         return false;
